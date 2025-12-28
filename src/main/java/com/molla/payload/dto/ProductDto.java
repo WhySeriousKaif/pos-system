@@ -20,6 +20,8 @@ public class ProductDto {
 
     public String brand;
     public String image;
+    
+    public Integer quantity; // Product stock quantity
 
     private Long storeId;
     private Long categoryId;

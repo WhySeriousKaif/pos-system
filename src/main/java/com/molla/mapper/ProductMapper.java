@@ -16,6 +16,7 @@ public class ProductMapper {
         productDto.setMrp(product.getMrp());
         productDto.setSellingPrice(product.getSellingPrice());
         productDto.setBrand(product.getBrand());
+        productDto.setQuantity(product.getQuantity());
         if(product.getCategory() != null) {
             productDto.setCategory(CategoryMapper.toDto(product.getCategory()));
         }
@@ -33,6 +34,10 @@ public class ProductMapper {
         product.setSku(productDto.getSku());
         product.setMrp(productDto.getMrp());
         product.setSellingPrice(productDto.getSellingPrice());
+        // Set price to sellingPrice if price column exists in database
+        product.setPrice(productDto.getSellingPrice());
+        // Set quantity, default to 0 if not provided
+        product.setQuantity(productDto.getQuantity() != null ? productDto.getQuantity() : 0);
         product.setBrand(productDto.getBrand());
         product.setImage(productDto.getImage());
         product.setStore(store);

@@ -36,6 +36,12 @@ public class Product {
 
     public Double mrp;
     public Double sellingPrice;
+    
+    @Column(name = "price")
+    public Double price; // Database column that may be redundant with sellingPrice
+
+    @Column(name = "quantity")
+    public Integer quantity; // Product stock quantity
 
     public String brand;
     public String image;

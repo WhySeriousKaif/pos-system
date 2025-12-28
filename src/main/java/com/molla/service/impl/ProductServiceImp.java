@@ -45,6 +45,14 @@ public class ProductServiceImp implements ProductService {
         product.setSku(productDto.getSku());
         product.setMrp(productDto.getMrp());
         product.setSellingPrice(productDto.getSellingPrice());
+        // Update price to match sellingPrice if price column exists in database
+        if(productDto.getSellingPrice() != null) {
+            product.setPrice(productDto.getSellingPrice());
+        }
+        // Update quantity if provided
+        if(productDto.getQuantity() != null) {
+            product.setQuantity(productDto.getQuantity());
+        }
         product.setBrand(productDto.getBrand());
         product.setImage(productDto.getImage());
         if(productDto.getStoreId() != null) {
