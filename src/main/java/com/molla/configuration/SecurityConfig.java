@@ -1,0 +1,74 @@
+package com.molla.configuration;
+
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.List;
+
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        return http
+                // 1. Stateless session (JWT based)
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                // 2. Authorization rules
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/super-admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/**").authenticated()
+                        .anyRequest().permitAll()
+                )
+
+                // 3. JWT filter
+                .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class)
+
+                // 4. Disable CSRF
+                .csrf(AbstractHttpConfigurer::disable)
+
+                // 5. Enable CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                // 6. Build the filter chain
+                .build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        return new CorsConfigurationSource() {
+            @Override
+            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+
+                CorsConfiguration config = new CorsConfiguration();
+
+                // Allow frontend URL
+                config.setAllowedOrigins(List.of("http://localhost:3000","http://localhost:5173"));
+
+                // Allow HTTP methods
+                config.setAllowedMethods(List.of(
+                        "GET", "POST", "PUT", "DELETE", "OPTIONS"
+                ));
+
+                // Allow headers
+                config.setAllowedHeaders(List.of("*"));
+
+                // Allow JWT token
+                config.setAllowCredentials(true);
+
+                return config;
+            }
+        };
+    }
+}
