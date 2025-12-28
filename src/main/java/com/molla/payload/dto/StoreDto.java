@@ -16,6 +16,8 @@ public class StoreDto {
 
     private UserDto  storeAdmin; //one store has one admin
 
+    private CategoryDto category;
+
     private LocalDateTime createdAt;
     private  LocalDateTime updatedAt;
 
