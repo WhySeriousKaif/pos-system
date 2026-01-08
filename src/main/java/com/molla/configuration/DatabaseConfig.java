@@ -87,11 +87,12 @@ public class DatabaseConfig {
         }
         
         // Priority 3: Check for SPRING_DATASOURCE_URL from environment
+        // BUT: Skip if it contains mysql.railway.internal (internal hostname that doesn't work)
         String springUrl = System.getenv("SPRING_DATASOURCE_URL");
         String springUser = System.getenv("SPRING_DATASOURCE_USERNAME");
         String springPass = System.getenv("SPRING_DATASOURCE_PASSWORD");
         
-        if (springUrl != null && !springUrl.isEmpty()) {
+        if (springUrl != null && !springUrl.isEmpty() && !springUrl.contains("mysql.railway.internal")) {
             properties.setUrl(springUrl);
             if (springUser != null && !springUser.isEmpty()) {
                 properties.setUsername(springUser);
@@ -101,6 +102,9 @@ public class DatabaseConfig {
             }
             logger.info("Using SPRING_DATASOURCE_URL from environment");
             return properties;
+        } else if (springUrl != null && springUrl.contains("mysql.railway.internal")) {
+            logger.warn("SPRING_DATASOURCE_URL contains mysql.railway.internal (internal hostname). " +
+                      "Ignoring and trying Railway MySQL variables instead.");
         }
         
         // Priority 4: Fall back to application.properties values
