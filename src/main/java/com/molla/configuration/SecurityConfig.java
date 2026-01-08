@@ -83,7 +83,7 @@ public class SecurityConfig {
                     // Production: Use environment variable (comma-separated)
                     // Trim whitespace from each origin
                     List<String> origins = Arrays.stream(allowedOrigins.split(","))
-                            .map(String::trim)
+                            .map(String::trim).map(s -> s.startsWith("=") ? s.substring(1) : s)
                             .filter(s -> !s.isEmpty())
                             .collect(Collectors.toList());
                     
