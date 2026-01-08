@@ -29,6 +29,7 @@ public class CategoryServiceImp implements CategoryService {
         
         Category category = new Category();
         category.setName(categoryDto.getName());
+        category.setDescription(categoryDto.getDescription());
         category.setStore(store);
        
         return CategoryMapper.toDto(categoryRepository.save(category));
@@ -45,6 +46,7 @@ public class CategoryServiceImp implements CategoryService {
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
         category.setName(categoryDto.getName());
+        category.setDescription(categoryDto.getDescription());
         checkAuthority(user, category.getStore()); 
 
         return CategoryMapper.toDto(categoryRepository.save(category));
@@ -57,6 +59,7 @@ public class CategoryServiceImp implements CategoryService {
         checkAuthority(user, category.getStore());
         
         category.setName(categoryDto.getName());
+        category.setDescription(categoryDto.getDescription());
         return CategoryMapper.toDto(categoryRepository.save(category));
     }
     

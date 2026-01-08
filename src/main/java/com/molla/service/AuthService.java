@@ -8,5 +8,5 @@ public interface AuthService {
 
 
     AuthResponse signUp(UserDto user) throws UserException;
-    AuthResponse login(UserDto user);
+    AuthResponse login(UserDto user) throws UserException;
 }

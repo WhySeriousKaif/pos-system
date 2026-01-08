@@ -77,14 +77,23 @@ public class AuthServiceImp implements AuthService {
     }
 
     @Override
-    public AuthResponse login(UserDto user) {
+    public AuthResponse login(UserDto user) throws UserException {
         String email=user.getEmail();
         String password=user.getPassword();
         Authentication authentication=authenticate(email,password);
+        
+        // Check if authentication failed
+        if (authentication == null) {
+            throw new UserException("Invalid email or password");
+        }
+        
         String jwt=jwtProvider.generateToken(authentication);
 
         User foundUser=userRepository.findByEmail(email);
-
+        
+        if (foundUser == null) {
+            throw new UserException("User not found");
+        }
 
         foundUser.setLastLoginAt(LocalDateTime.now());
 
@@ -94,8 +103,6 @@ public class AuthServiceImp implements AuthService {
         authResponse.setJwt(jwt);
         authResponse.setMessage("Login successfully");
         authResponse.setUser(UserMapper.toDto(foundUser));
-
-
 
         return authResponse;
     }

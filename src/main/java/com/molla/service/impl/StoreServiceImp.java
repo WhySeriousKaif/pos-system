@@ -50,10 +50,10 @@ public class StoreServiceImp implements StoreService {
 
     @Override
     public StoreDto getStoreByAdmin(User user) throws UserException {
-        User admin = userService.getCurrentUser();
-        Store store = storeRepository.findByStoreAdminId(admin.getId());
+        // Use the user parameter passed in, not getCurrentUser()
+        Store store = storeRepository.findByStoreAdminId(user.getId());
         if(store == null) {
-            throw new UserException("Store not found");
+            throw new UserException("Store not found for this admin. Please create a store first.");
         }
         return StoreMapper.toDTO(store);
     }

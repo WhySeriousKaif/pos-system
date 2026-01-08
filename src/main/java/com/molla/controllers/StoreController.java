@@ -40,8 +40,16 @@ public class StoreController {
    @GetMapping("/admin")
    public ResponseEntity<List<StoreDto>> getStoreByAdmin(@RequestHeader("Authorization") String jwt) throws UserException {
     User user = userService.getUserFromJwt(jwt);
+    try {
     StoreDto store = storeService.getStoreByAdmin(user);
     return ResponseEntity.ok(List.of(store));
+    } catch (UserException e) {
+        // If store not found, return empty list instead of throwing exception
+        if (e.getMessage() != null && e.getMessage().contains("Store not found")) {
+            return ResponseEntity.ok(List.of());
+        }
+        throw e;
+    }
    }
    @GetMapping("/employee")
    public ResponseEntity<StoreDto> getStoreByEmployee(@RequestHeader("Authorization") String jwt) throws UserException {

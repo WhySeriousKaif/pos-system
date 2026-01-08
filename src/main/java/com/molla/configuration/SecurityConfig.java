@@ -29,6 +29,7 @@ public class SecurityConfig {
 
                 // 2. Authorization rules (order matters - more specific first)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()  // Allow auth endpoints (login, signup)
                         .requestMatchers("/api/super-admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/products/public/**").permitAll()  // Public products endpoints
                         .requestMatchers("/api/customers/**").permitAll()  // Allow customers endpoint for testing

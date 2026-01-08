@@ -582,10 +582,17 @@ public class JwtConstant {
 http://localhost:5001
 ```
 
-### Authentication Endpoints
+**Note**: Frontend uses `http://localhost:5001/api` for API calls and `http://localhost:5001/auth` for authentication.
+
+---
+
+## Complete API Endpoint Mapping with Frontend Usage
+
+### 🔐 Authentication Endpoints (`/auth`)
 
 #### 1. User Registration
 **Endpoint**: `POST /auth/signup`
+**Frontend Usage**: `pos-frontend/src/pages/auth/Register.jsx` → `authAPI.signup()`
 
 **Request Headers:**
 ```
@@ -677,6 +684,264 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 GET /api/users/profile
 Authorization: Bearer <token>
+```
+
+---
+
+## Complete API Endpoint Reference with Frontend Mapping
+
+### 👤 User Endpoints (`/api/users`)
+
+| Endpoint | Method | Frontend Usage | Component |
+|----------|--------|----------------|-----------|
+| `/api/users/profile` | GET | `userAPI.getProfile()` | All panels - Header/Profile |
+| `/api/users/{id}` | GET | `userAPI.getById(id)` | User management |
+| `/api/users/all` | GET | `userAPI.getAll()` | Admin panels |
+
+**Frontend Files:**
+- `pos-frontend/src/pages/cashier/header/POSHeader.jsx`
+- `pos-frontend/src/pages/store/layout/StoreAdminLayout.jsx`
+- `pos-frontend/src/pages/branch/layout/BranchLayout.jsx`
+
+---
+
+### 🏪 Store Endpoints (`/api/stores`)
+
+| Endpoint | Method | Frontend Usage | Component |
+|----------|--------|----------------|-----------|
+| `/api/stores` | POST | `storeAPI.create(storeDto)` | Store Admin - Create Store |
+| `/api/stores` | GET | `storeAPI.getAll()` | Super Admin - Stores Page |
+| `/api/stores/{id}` | GET | `storeAPI.getById(id)` | Store details |
+| `/api/stores/admin` | GET | `storeAPI.getByAdmin()` | Store Admin - Dashboard |
+| `/api/stores/{id}` | PUT | `storeAPI.update(id, storeDto)` | Store Admin - Settings |
+| `/api/stores/{id}` | DELETE | `storeAPI.delete(id)` | Store Admin - Delete |
+| `/api/stores/{id}/moderate` | PUT | `storeAPI.moderate(id, status)` | Super Admin - Moderate Store |
+
+**Frontend Files:**
+- `pos-frontend/src/pages/store/stores/StoresPage.jsx`
+- `pos-frontend/src/pages/store/settings/SettingsPage.jsx`
+- `pos-frontend/src/pages/super-admin/stores/StoresPage.jsx`
+
+---
+
+### 🏢 Branch Endpoints (`/api/branches`)
+
+| Endpoint | Method | Frontend Usage | Component |
+|----------|--------|----------------|-----------|
+| `/api/branches` | POST | `branchAPI.create(branchDto)` | Store Admin - Branches Page |
+| `/api/branches/{id}` | GET | `branchAPI.getById(id)` | All panels - Branch info |
+| `/api/branches/store/{storeId}` | GET | `branchAPI.getByStoreId(storeId)` | Store Admin - Branches list |
+| `/api/branches/{id}` | PUT | `branchAPI.update(id, branchDto)` | Store Admin - Edit Branch |
+| `/api/branches/{id}` | DELETE | `branchAPI.delete(id)` | Store Admin - Delete Branch |
+
+**Frontend Files:**
+- `pos-frontend/src/pages/store/branches/BranchesPage.jsx`
+- `pos-frontend/src/pages/cashier/sidebar/PosSidebar.jsx`
+- `pos-frontend/src/pages/branch/settings/SettingsPage.jsx`
+
+---
+
+### 📦 Product Endpoints (`/api/products`)
+
+| Endpoint | Method | Frontend Usage | Component |
+|----------|--------|----------------|-----------|
+| `/api/products` | POST | `productAPI.create(productDto)` | Store Admin - Products Page |
+| `/api/products/{id}` | PUT | `productAPI.update(id, productDto)` | Store Admin - Edit Product |
+| `/api/products/{id}` | DELETE | `productAPI.delete(id)` | Store Admin - Delete Product |
+| `/api/products/storeId/{storeId}` | GET | `productAPI.getByStoreId(storeId)` | Store Admin - Products list |
+| `/api/products/search/{storeId}/{keyword}` | GET | `productAPI.search(storeId, keyword)` | Cashier - Product search |
+| `/api/products/all` | GET | `productAPI.getAllAuth()` | Authenticated product list |
+| `/api/products/public/all` | GET | `productAPI.getAll()` | Cashier - Product catalog |
+
+**Frontend Files:**
+- `pos-frontend/src/pages/store/products/ProductsPage.jsx`
+- `pos-frontend/src/pages/cashier/ProductSection/ProductSection.jsx`
+
+---
+
+### 🏷️ Category Endpoints (`/api/categories`)
+
+| Endpoint | Method | Frontend Usage | Component |
+|----------|--------|----------------|-----------|
+| `/api/categories` | POST | `categoryAPI.create(categoryDto)` | Store Admin - Categories Page |
+| `/api/categories/store/{storeId}` | GET | `categoryAPI.getByStoreId(storeId)` | Store Admin - Categories list |
+| `/api/categories/{id}` | PUT | `categoryAPI.update(id, categoryDto)` | Store Admin - Edit Category |
+| `/api/categories/{id}` | DELETE | `categoryAPI.delete(id)` | Store Admin - Delete Category |
+
+**Frontend Files:**
+- `pos-frontend/src/pages/store/categories/CategoriesPage.jsx`
+- `pos-frontend/src/pages/store/products/ProductsPage.jsx` (for category dropdown)
+
+---
+
+### 🛒 Order Endpoints (`/api/orders`)
+
+| Endpoint | Method | Frontend Usage | Component |
+|----------|--------|----------------|-----------|
+| `/api/orders` | POST | `orderAPI.create(orderDto)` | Cashier - Create Order |
+| `/api/orders/{id}` | GET | `orderAPI.getById(id)` | Order details |
+| `/api/orders/{id}` | PUT | `orderAPI.update(id, orderDto)` | Update order |
+| `/api/orders/{id}` | DELETE | `orderAPI.delete(id)` | Delete order |
+| `/api/orders/branch/{branchId}` | GET | `orderAPI.getByBranch(branchId, filters)` | Branch Manager - Orders Page |
+| `/api/orders/cashier/{cashierId}` | GET | `orderAPI.getByCashier(cashierId)` | Cashier - Order History |
+| `/api/orders/today/branch/{id}` | GET | `orderAPI.getTodayByBranch(id)` | Branch - Today's orders |
+| `/api/orders/recent/{branchId}` | GET | `orderAPI.getRecentByBranch(branchId)` | Branch - Recent orders |
+| `/api/orders/customer/{id}` | GET | `orderAPI.getByCustomerId(id)` | Customer order history |
+
+**Frontend Files:**
+- `pos-frontend/src/pages/cashier/CreateOrder.jsx`
+- `pos-frontend/src/pages/cashier/OrderHistory.jsx`
+- `pos-frontend/src/pages/branch/orders/OrdersPage.jsx`
+
+---
+
+### 👥 Customer Endpoints (`/api/customers`)
+
+| Endpoint | Method | Frontend Usage | Component |
+|----------|--------|----------------|-----------|
+| `/api/customers` | POST | `customerAPI.create(customer)` | Cashier - Add Customer |
+| `/api/customers` | GET | `customerAPI.getAll()` | All customers list |
+| `/api/customers/{id}` | GET | `customerAPI.getById(id)` | Customer details |
+| `/api/customers/search?keyword={term}` | GET | `customerAPI.search(keyword)` | Cashier - Customer search |
+| `/api/customers/{id}` | PUT | `customerAPI.update(id, customer)` | Update customer |
+| `/api/customers/{id}` | DELETE | `customerAPI.delete(id)` | Delete customer |
+
+**Frontend Files:**
+- `pos-frontend/src/pages/cashier/CustomerPaymentSection/CustomerPaymentSection.jsx`
+- `pos-frontend/src/pages/cashier/customers/CustomersPage.jsx`
+- `pos-frontend/src/pages/branch/customers/CustomersPage.jsx`
+
+---
+
+### 👔 Employee Endpoints (`/api/employees`)
+
+| Endpoint | Method | Frontend Usage | Component |
+|----------|--------|----------------|-----------|
+| `/api/employees/store/{storeId}` | POST | `employeeAPI.createStoreEmployee(storeId, employeeDto)` | Store Admin - Employees Page |
+| `/api/employees/branch/{branchId}` | POST | `employeeAPI.createBranchEmployee(branchId, employeeDto)` | Store Admin - Create Branch Employee |
+| `/api/employees/{employeeId}` | PUT | `employeeAPI.updateEmployee(employeeId, employeeDto)` | Store Admin - Edit Employee |
+| `/api/employees/{employeeId}` | DELETE | `employeeAPI.deleteEmployee(employeeId)` | Store Admin - Delete Employee |
+| `/api/employees/store/{storeId}?role={role}` | GET | `employeeAPI.getByStore(storeId, role)` | Store Admin - Store employees |
+| `/api/employees/branch/{branchId}?role={role}` | GET | `employeeAPI.getByBranch(branchId, role)` | Branch Manager - Branch employees |
+
+**Frontend Files:**
+- `pos-frontend/src/pages/store/employees/EmployeesPage.jsx`
+- `pos-frontend/src/pages/branch/employees/EmployeesPage.jsx`
+
+---
+
+### 📦 Inventory Endpoints (`/api/inventories`)
+
+| Endpoint | Method | Frontend Usage | Component |
+|----------|--------|----------------|-----------|
+| `/api/inventories` | POST | `inventoryAPI.create(inventoryDto)` | Branch Manager - Inventory Page |
+| `/api/inventories/{id}` | PUT | `inventoryAPI.update(id, inventoryDto)` | Branch Manager - Update Inventory |
+| `/api/inventories/{id}` | DELETE | `inventoryAPI.delete(id)` | Branch Manager - Delete Inventory |
+| `/api/inventories/product/{productId}/branch/{branchId}` | GET | `inventoryAPI.getByProductAndBranch(productId, branchId)` | Get specific inventory |
+| `/api/inventories/branch/{branchId}` | GET | `inventoryAPI.getByBranch(branchId)` | Branch Manager - Inventory list |
+
+**Frontend Files:**
+- `pos-frontend/src/pages/branch/inventory/InventoryPage.jsx`
+
+---
+
+### 💰 Refund Endpoints (`/api/refunds`)
+
+| Endpoint | Method | Frontend Usage | Component |
+|----------|--------|----------------|-----------|
+| `/api/refunds` | POST | `refundAPI.create(refundDto)` | Cashier - Refund Page |
+| `/api/refunds` | GET | `refundAPI.getAll()` | All refunds |
+| `/api/refunds/{id}` | GET | `refundAPI.getById(id)` | Refund details |
+| `/api/refunds/cashier/{cashierId}` | GET | `refundAPI.getByCashier(cashierId)` | Cashier refunds |
+| `/api/refunds/branch/{branchId}` | GET | `refundAPI.getByBranch(branchId)` | Branch Manager - Refunds Page |
+| `/api/refunds/shift/{shiftReportId}` | GET | `refundAPI.getByShift(shiftReportId)` | Shift refunds |
+| `/api/refunds/{id}` | DELETE | `refundAPI.delete(id)` | Delete refund |
+
+**Frontend Files:**
+- `pos-frontend/src/pages/cashier/refund/RefundPage.jsx`
+- `pos-frontend/src/pages/branch/refunds/RefundsPage.jsx`
+
+---
+
+### 📊 Shift Report Endpoints (`/api/shift-reports`)
+
+| Endpoint | Method | Frontend Usage | Component |
+|----------|--------|----------------|-----------|
+| `/api/shift-reports/start` | POST | `shiftReportAPI.startShift(cashierId, branchId)` | Start shift |
+| `/api/shift-reports/end` | PATCH | `shiftReportAPI.endShift(shiftReportId)` | End shift |
+| `/api/shift-reports/current?cashierId={id}` | GET | `shiftReportAPI.getCurrent(cashierId)` | Cashier - Shift Summary |
+| `/api/shift-reports/cashier/{cashierId}` | GET | `shiftReportAPI.getByCashier(cashierId)` | Cashier shift reports |
+| `/api/shift-reports/branch/{branchId}` | GET | `shiftReportAPI.getByBranch(branchId)` | Branch shift reports |
+| `/api/shift-reports` | GET | `shiftReportAPI.getAll()` | All shift reports |
+| `/api/shift-reports/{id}` | GET | `shiftReportAPI.getById(id)` | Shift report details |
+
+**Frontend Files:**
+- `pos-frontend/src/pages/cashier/shift-report/ShiftSummery.jsx`
+
+---
+
+## Frontend API Service Structure
+
+All API calls are centralized in:
+**File**: `pos-frontend/src/services/api.js`
+
+### API Base Configuration
+```javascript
+const API_BASE_URL = 'http://localhost:5001/api';
+```
+
+### Available API Modules:
+- `authAPI` - Authentication (login, signup)
+- `userAPI` - User profile and management
+- `storeAPI` - Store CRUD operations
+- `branchAPI` - Branch management
+- `productAPI` - Product catalog and management
+- `categoryAPI` - Category management
+- `orderAPI` - Order processing and history
+- `customerAPI` - Customer management
+- `employeeAPI` - Employee management
+- `inventoryAPI` - Inventory tracking
+- `refundAPI` - Refund processing
+- `shiftReportAPI` - Shift reports and summaries
+
+---
+
+## Frontend-Backend Flow
+
+### 1. Authentication Flow
+```
+Frontend (Login.jsx)
+  ↓
+authAPI.login(credentials)
+  ↓
+POST /auth/login
+  ↓
+Backend (AuthController)
+  ↓
+Returns JWT token
+  ↓
+Frontend stores token in localStorage
+  ↓
+Token used in Authorization header for all API calls
+```
+
+### 2. Protected Resource Flow
+```
+Frontend Component
+  ↓
+API Service (e.g., productAPI.getAll())
+  ↓
+Adds Authorization header with JWT
+  ↓
+POST/GET/PUT/DELETE /api/{resource}
+  ↓
+Backend Controller
+  ↓
+JwtValidator filter validates token
+  ↓
+Service layer processes request
+  ↓
+Returns response to frontend
 ```
 
 ---

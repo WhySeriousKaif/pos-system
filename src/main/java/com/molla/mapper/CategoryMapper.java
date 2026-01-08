@@ -12,6 +12,7 @@ public class CategoryMapper {
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setId(category.getId());
         categoryDto.setName(category.getName());
+        categoryDto.setDescription(category.getDescription());
         categoryDto.setStoreId(category.getStore() != null ? category.getStore().getId() : null);
         return categoryDto;
     }
@@ -20,6 +21,7 @@ public class CategoryMapper {
         Category category = new Category();
         category.setId(categoryDto.getId());
         category.setName(categoryDto.getName());
+        category.setDescription(categoryDto.getDescription());
         return category;
     }
 }

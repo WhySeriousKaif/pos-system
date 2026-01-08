@@ -3,6 +3,8 @@ package com.molla.model;
 import com.molla.domain.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -42,7 +44,8 @@ public class User {
 
     private String phone;
 
-    @Column( nullable = false)
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserRole role;
     private LocalDateTime createdAt;
     private  LocalDateTime updatedAt;
