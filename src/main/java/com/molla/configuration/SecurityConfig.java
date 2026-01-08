@@ -79,24 +79,27 @@ public class SecurityConfig {
                 String allowedOrigins = System.getenv("ALLOWED_ORIGINS");
                 String origin = request.getHeader("Origin");
                 
+                List<String> origins;
                 if (allowedOrigins != null && !allowedOrigins.isEmpty()) {
                     // Production: Use environment variable (comma-separated)
-                    // Trim whitespace from each origin
-                    List<String> origins = Arrays.stream(allowedOrigins.split(","))
-                            .map(String::trim).map(s -> s.startsWith("=") ? s.substring(1) : s)
+                    // Trim whitespace and strip any accidental leading '=' from each origin
+                    origins = Arrays.stream(allowedOrigins.split(","))
+                            .map(String::trim)
+                            .map(s -> s.startsWith("=") ? s.substring(1) : s)
                             .filter(s -> !s.isEmpty())
                             .collect(Collectors.toList());
-                    
-                    config.setAllowedOrigins(origins);
-                    
-                    logger.info("CORS Configuration - Allowed Origins: {}", origins);
-                    logger.info("CORS Configuration - Request Origin: {}", origin);
                 } else {
                     // Development: Default localhost URLs
-                    List<String> defaultOrigins = List.of("http://localhost:3000", "http://localhost:5173");
-                    config.setAllowedOrigins(defaultOrigins);
-                    logger.warn("ALLOWED_ORIGINS not set, using default localhost origins: {}", defaultOrigins);
+                    origins = List.of("http://localhost:3000", "http://localhost:5173");
+                    logger.warn("ALLOWED_ORIGINS not set, using default localhost origins: {}", origins);
                 }
+
+                // Use origin *patterns* instead of exact origins so Spring will match dynamically.
+                // This is more robust across proxies and scheme/port nuances.
+                config.setAllowedOriginPatterns(origins);
+
+                logger.info("CORS Configuration - Allowed Origin Patterns: {}", origins);
+                logger.info("CORS Configuration - Request Origin: {}", origin);
 
                 // Allow HTTP methods
                 config.setAllowedMethods(List.of(
