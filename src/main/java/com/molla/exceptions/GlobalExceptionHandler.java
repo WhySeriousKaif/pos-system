@@ -33,6 +33,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("success", false);
+        errorResponse.put("message", ex.getMessage() != null ? ex.getMessage() : "An error occurred");
+        errorResponse.put("error", ex.getClass().getSimpleName());
+        
+        // Check if it's a "not found" error
+        if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("not found")) {
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+        
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
         Map<String, Object> errorResponse = new HashMap<>();
